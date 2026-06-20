@@ -1,9 +1,22 @@
 # RentaFácil
 
-**Autor:** Erick Chango
+Autor: Erick Chango
 
-Este proyecto es el sistema de gestión de flota para la empresa RentaFácil, desarrollado como parte de la evaluación de Programación 3.
+Proyecto de la evaluación parcial de Programación 3.
 
-El backend está construido con Spring Boot y se conecta a una base de datos PostgreSQL. Permite registrar, consultar, actualizar y eliminar vehículos a través de una API REST. También incluye tres consultas personalizadas para filtrar por categoría, rango de precio y búsqueda por modelo.
+Este sistema fue desarrollado para una empresa ficticia de alquiler de vehículos 
+llamada RentaFácil. La idea es que el personal de la empresa pueda gestionar su 
+flota de vehículos de forma sencilla desde una interfaz web.
 
-El frontend es una página web simple hecha con HTML, CSS y JavaScript que consume la API mediante fetch y muestra los resultados en pantalla.
+El backend está hecho con Spring Boot y Java, conectado a una base de datos 
+PostgreSQL. Implementé una API REST completa con las operaciones de crear, listar, 
+buscar por ID, actualizar y eliminar vehículos. Cada campo del vehículo tiene sus 
+validaciones correspondientes para asegurar que los datos ingresados sean correctos.
+
+Además incluí tres consultas personalizadas: una para filtrar vehículos por categoría 
+y disponibilidad, otra para buscar dentro de un rango de precio ordenado de menor a 
+mayor, y una última para hacer búsqueda parcial por nombre del modelo.
+
+El frontend es una página web desarrollada con HTML, CSS y JavaScript puro. Se 
+conecta a la API usando fetch y permite realizar todas las operaciones del CRUD 
+directamente desde el navegador, mostrando la respuesta del servidor en pantalla.
