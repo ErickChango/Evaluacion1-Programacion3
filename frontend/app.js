@@ -76,3 +76,4 @@ function limpiar() {
         document.getElementById(id).value = '';
     });
 }
+
