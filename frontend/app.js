@@ -1,66 +1,42 @@
 const API_URL = 'http://localhost:8080/api/vehiculos';
 
-function mostrarRespuesta(data, isError = false) {
-    const box = document.getElementById('respuesta');
-    box.textContent = JSON.stringify(data, null, 2);
-    box.className = 'respuesta-box ' + (isError ? 'err' : 'ok');
-    document.getElementById('respuestaSection').scrollIntoView({ behavior: 'smooth' });
+function mostrar(data, error = false) {
+    const pre = document.getElementById('respuesta');
+    pre.textContent = JSON.stringify(data, null, 2);
+    pre.style.borderLeft = error ? '4px solid red' : '4px solid green';
 }
 
 async function peticion(url, opciones = {}) {
     try {
-        const response = await fetch(url, opciones);
-
-        if (response.status === 204) {
-            mostrarRespuesta({ mensaje: 'Vehículo eliminado correctamente', status: 204 });
-            return;
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            mostrarRespuesta({ error: data, status: response.status }, true);
-        } else {
-            mostrarRespuesta(data);
-        }
-    } catch (err) {
-        mostrarRespuesta({ error: 'No se pudo conectar con el servidor. ¿Está corriendo el backend?', detalle: err.message }, true);
+        const res = await fetch(url, opciones);
+        if (res.status === 204) { mostrar({ mensaje: 'Eliminado correctamente' }); return; }
+        const data = await res.json();
+        mostrar(data, !res.ok);
+    } catch (e) {
+        mostrar({ error: 'No se pudo conectar con el servidor' }, true);
     }
 }
 
-document.getElementById('formVehiculo').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
+async function guardar() {
     const id = document.getElementById('vehiculoId').value;
-
     const vehiculo = {
-        modelo:              document.getElementById('modelo').value.trim(),
-        categoria:           document.getElementById('categoria').value.trim(),
-        descripcion:         document.getElementById('descripcion').value.trim() || null,
+        modelo:              document.getElementById('modelo').value,
+        categoria:           document.getElementById('categoria').value,
+        descripcion:         document.getElementById('descripcion').value || null,
         precioPorDia:        parseFloat(document.getElementById('precioPorDia').value),
         unidadesDisponibles: parseInt(document.getElementById('unidadesDisponibles').value),
     };
-
     if (id) {
-        await peticion(`${API_URL}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(vehiculo),
-        });
+        await peticion(`${API_URL}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(vehiculo) });
     } else {
-        await peticion(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(vehiculo),
-        });
+        await peticion(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(vehiculo) });
     }
-
-    limpiarFormulario();
-});
+    limpiar();
+}
 
 async function buscarPorId() {
     const id = document.getElementById('buscarId').value;
-    if (!id) { alert('Ingresa un ID válido'); return; }
+    if (!id) { alert('Ingresa un ID'); return; }
     await peticion(`${API_URL}/${id}`);
 }
 
@@ -70,16 +46,16 @@ async function listarTodos() {
 
 async function eliminar() {
     const id = document.getElementById('eliminarId').value;
-    if (!id) { alert('Ingresa un ID válido'); return; }
-    if (!confirm(`¿Eliminar el vehículo con ID ${id}?`)) return;
+    if (!id) { alert('Ingresa un ID'); return; }
+    if (!confirm(`¿Eliminar vehículo ${id}?`)) return;
     await peticion(`${API_URL}/${id}`, { method: 'DELETE' });
 }
 
 async function buscarPorCategoria() {
-    const categoria   = document.getElementById('qCategoria').value.trim();
-    const minUnidades = document.getElementById('qMinUnidades').value || 0;
+    const categoria = document.getElementById('qCategoria').value;
+    const min = document.getElementById('qMinUnidades').value || 0;
     if (!categoria) { alert('Ingresa una categoría'); return; }
-    await peticion(`${API_URL}/por-categoria?categoria=${encodeURIComponent(categoria)}&minUnidades=${minUnidades}`);
+    await peticion(`${API_URL}/por-categoria?categoria=${encodeURIComponent(categoria)}&minUnidades=${min}`);
 }
 
 async function buscarPorPrecio() {
@@ -90,19 +66,13 @@ async function buscarPorPrecio() {
 }
 
 async function buscarPorModelo() {
-    const modelo = document.getElementById('qModelo').value.trim();
-    if (!modelo) { alert('Ingresa un texto para buscar'); return; }
+    const modelo = document.getElementById('qModelo').value;
+    if (!modelo) { alert('Ingresa un modelo'); return; }
     await peticion(`${API_URL}/buscar?modelo=${encodeURIComponent(modelo)}`);
 }
 
-function limpiarFormulario() {
-    document.getElementById('vehiculoId').value          = '';
-    document.getElementById('modelo').value              = '';
-    document.getElementById('categoria').value           = '';
-    document.getElementById('descripcion').value         = '';
-    document.getElementById('precioPorDia').value        = '';
-    document.getElementById('unidadesDisponibles').value = '';
-    document.getElementById('btnGuardar').textContent    = '💾 Guardar';
+function limpiar() {
+    ['vehiculoId','modelo','categoria','descripcion','precioPorDia','unidadesDisponibles'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
 }
-
-document.getElementById('btnLimpiar').addEventListener('click', limpiarFormulario);

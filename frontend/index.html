@@ -2,109 +2,64 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RentaFácil – Gestión de Vehículos</title>
+  <title>RentaFácil</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <header>
-    <h1>🚗 RentaFácil</h1>
-    <p>Sistema de Gestión de Flota</p>
-  </header>
+  <h1>RentaFácil - Gestión de Vehículos</h1>
 
-  <main>
+  <section>
+    <h2>Crear / Actualizar Vehículo</h2>
+    <input type="hidden" id="vehiculoId" />
+    <input type="text" id="modelo" placeholder="Modelo" /><br/>
+    <input type="text" id="categoria" placeholder="Categoría" /><br/>
+    <input type="text" id="descripcion" placeholder="Descripción (opcional)" /><br/>
+    <input type="number" id="precioPorDia" placeholder="Precio por día" /><br/>
+    <input type="number" id="unidadesDisponibles" placeholder="Unidades disponibles" /><br/>
+    <button onclick="guardar()">Guardar</button>
+    <button onclick="limpiar()">Limpiar</button>
+  </section>
 
-    <section class="card">
-      <h2>Crear / Actualizar Vehículo</h2>
-      <form id="formVehiculo">
-        <input type="hidden" id="vehiculoId" />
+  <section>
+    <h2>Buscar por ID</h2>
+    <input type="number" id="buscarId" placeholder="ID" />
+    <button onclick="buscarPorId()">Buscar</button>
+  </section>
 
-        <label>Modelo *</label>
-        <input type="text" id="modelo" placeholder="Ej: Toyota Corolla 2024" required />
+  <section>
+    <h2>Listar Todos</h2>
+    <button onclick="listarTodos()">Listar</button>
+  </section>
 
-        <label>Categoría *</label>
-        <input type="text" id="categoria" placeholder="Ej: Sedán, SUV, Pickup" required />
+  <section>
+    <h2>Eliminar</h2>
+    <input type="number" id="eliminarId" placeholder="ID" />
+    <button onclick="eliminar()">Eliminar</button>
+  </section>
 
-        <label>Descripción</label>
-        <textarea id="descripcion" placeholder="Opcional, máx 255 caracteres" maxlength="255"></textarea>
+  <section>
+    <h2>Consultas</h2>
 
-        <label>Precio por día (USD) *</label>
-        <input type="number" id="precioPorDia" placeholder="Ej: 45.00" step="0.01" min="0.01" required />
+    <p><strong>Por categoría y unidades disponibles</strong></p>
+    <input type="text" id="qCategoria" placeholder="Categoría" />
+    <input type="number" id="qMinUnidades" placeholder="Mín. unidades" value="0" />
+    <button onclick="buscarPorCategoria()">Buscar</button>
 
-        <label>Unidades disponibles *</label>
-        <input type="number" id="unidadesDisponibles" placeholder="Ej: 3" min="0" required />
+    <p><strong>Por rango de precio</strong></p>
+    <input type="number" id="qPrecioMin" placeholder="Precio mínimo" />
+    <input type="number" id="qPrecioMax" placeholder="Precio máximo" />
+    <button onclick="buscarPorPrecio()">Buscar</button>
 
-        <div class="btn-row">
-          <button type="submit" class="btn btn-primary" id="btnGuardar">💾 Guardar</button>
-          <button type="button" class="btn btn-secondary" id="btnLimpiar">✖ Limpiar</button>
-        </div>
-      </form>
-    </section>
+    <p><strong>Buscar por modelo</strong></p>
+    <input type="text" id="qModelo" placeholder="Ej: toyota" />
+    <button onclick="buscarPorModelo()">Buscar</button>
+  </section>
 
-    <section class="card">
-      <h2>Buscar por ID</h2>
-      <div class="input-row">
-        <input type="number" id="buscarId" placeholder="ID del vehículo" min="1" />
-        <button class="btn btn-primary" onclick="buscarPorId()">🔍 Buscar</button>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Listar Todos los Vehículos</h2>
-      <button class="btn btn-primary" onclick="listarTodos()">📋 Listar todos</button>
-    </section>
-
-    <section class="card">
-      <h2>Eliminar Vehículo</h2>
-      <div class="input-row">
-        <input type="number" id="eliminarId" placeholder="ID del vehículo" min="1" />
-        <button class="btn btn-danger" onclick="eliminar()">🗑 Eliminar</button>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Consultas Personalizadas</h2>
-
-      <div class="consulta">
-        <h3>a) Por categoría con unidades disponibles</h3>
-        <div class="input-row">
-          <input type="text" id="qCategoria" placeholder="Categoría (Ej: SUV)" />
-          <input type="number" id="qMinUnidades" placeholder="Mín. unidades" min="0" value="0" />
-          <button class="btn btn-accent" onclick="buscarPorCategoria()">🔎 Buscar</button>
-        </div>
-      </div>
-
-      <div class="consulta">
-        <h3>b) Por rango de precio</h3>
-        <div class="input-row">
-          <input type="number" id="qPrecioMin" placeholder="Precio mínimo" step="0.01" />
-          <input type="number" id="qPrecioMax" placeholder="Precio máximo" step="0.01" />
-          <button class="btn btn-accent" onclick="buscarPorPrecio()">🔎 Buscar</button>
-        </div>
-      </div>
-
-      <div class="consulta">
-        <h3>c) Búsqueda por modelo (parcial)</h3>
-        <div class="input-row">
-          <input type="text" id="qModelo" placeholder="Ej: toyota" />
-          <button class="btn btn-accent" onclick="buscarPorModelo()">🔎 Buscar</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="card" id="respuestaSection">
-      <h2>Respuesta del Servidor</h2>
-      <div id="respuesta" class="respuesta-box">
-        <span class="placeholder">Las respuestas de la API aparecerán aquí...</span>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <p>RentaFácil © 2025 – Backend: Spring Boot + PostgreSQL</p>
-  </footer>
+  <section>
+    <h2>Respuesta del servidor</h2>
+    <pre id="respuesta">Aquí aparecerá la respuesta...</pre>
+  </section>
 
   <script src="app.js"></script>
 </body>
